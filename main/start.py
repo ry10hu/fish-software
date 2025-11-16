@@ -15,16 +15,28 @@ class MainWindow(QMainWindow):
             lambda text: filter_list(self.fishListWidget, text)
         )
         
-        # Currently broken
-        # self.fishDescription.textEdited.connect(
-        #     lambda text: write_fish_description(
-        #         self.fishListWidget.currentItem().text(),
-        #         self.fishDescription.toPlainText()
+        self.fishDescription.textChanged.connect(
+            lambda: (
+                write_fish_description(
+                    self.fishListWidget.currentItem().text()
+                    if self.fishListWidget.currentItem() else "",
+                    self.fishDescription.toPlainText()
+                ) if self.fishListWidget.currentItem() else None
+            )
+        )
+        # Broken code for fish name editing
+        # self.fishNameTextEdit.textChanged.connect(
+        #     lambda: (
+        #         write_fish_name(
+        #             self.fishListWidget.currentItem().text()
+        #             if self.fishListWidget.currentItem() else "",
+        #             self.fishNameTextEdit.toPlainText()
+        #         ) if self.fishListWidget.currentItem() else None
         #     )
         # )
 
         self.fishListWidget.itemClicked.connect(lambda _: fill_fish_details(
-            self.fishNameLineEdit,
+            self.fishNameTextEdit,
             self.fishDescription,
             self.fishGraphicsView,
             self.fishListWidget.currentItem().text() if self.fishListWidget.currentItem() else ""
@@ -34,7 +46,7 @@ class MainWindow(QMainWindow):
             lambda _:(
                 toggle_art(self),
                 fill_fish_details(
-                    self.fishNameLineEdit,
+                    self.fishNameTextEdit,
                     self.fishDescription,
                     self.fishGraphicsView,
                     self.fishListWidget.currentItem().text() if self.fishListWidget.currentItem() else ""
@@ -45,7 +57,7 @@ class MainWindow(QMainWindow):
             lambda _:(
                 toggle_photo(self),
                 fill_fish_details(
-                    self.fishNameLineEdit,
+                    self.fishNameTextEdit,
                     self.fishDescription,
                     self.fishGraphicsView,
                     self.fishListWidget.currentItem().text() if self.fishListWidget.currentItem() else ""

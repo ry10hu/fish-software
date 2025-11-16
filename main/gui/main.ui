@@ -68,7 +68,7 @@
      <widget class="QWidget" name="rightPane" native="true">
       <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0,0,0">
        <item>
-        <widget class="QLineEdit" name="fishNameLineEdit">
+        <widget class="QPlainTextEdit" name="fishNameTextEdit">
          <property name="minimumSize">
           <size>
            <width>0</width>

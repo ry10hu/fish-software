@@ -38,13 +38,16 @@ def write_fish_description(name, description):
     files.cursor.execute("UPDATE fish SET description = ? WHERE name = ?", (description, name))
     files.conn.commit()
 
+def write_fish_name(name, new_name):
+    files.cursor.execute("UPDATE fish SET name = ? WHERE name = ?", (new_name, name))
+    files.conn.commit()
 
-def fill_fish_details( lineEdit, plainTextEdit, graphicsView, name):
+
+def fill_fish_details( fishTextEdit, descriptionPlainTextEdit, graphicsView, name):
     details = files.cursor.execute("SELECT * FROM fish WHERE name = ?", (name,)).fetchone()
     if details:
-        lineEdit.setText(details[1])  
-        print(details)# Assuming details[1] is some text field
-        plainTextEdit.setPlainText(details[2])  # Assuming details[2] is a description
+        fishTextEdit.setPlainText(details[1])  
+        descriptionPlainTextEdit.setPlainText(details[2])  # Assuming details[2] is a description
         if art:
             if details[4] != None:
                 setGraphicsView(graphicsView, config.art_path + "/" + details[4])  # Assuming details[4] is the image filename
