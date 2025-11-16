@@ -2,7 +2,8 @@ import sqlite3, config
 from PyQt6 import QtWidgets, uic
 from PyQt6.QtGui import QPixmap, QPainter
 from PyQt6.QtCore import Qt
-import sys
+from PyQt6.QtWidgets import QFileDialog
+import sys, shutil
 
 class files:
     conn = sqlite3.connect(f"{config.workspace}/fish.db")
@@ -34,14 +35,35 @@ def setGraphicsView(graphicsView, image_path):
     graphicsView.setScene(scene)
     graphicsView.fitInView(scene.itemsBoundingRect(), Qt.AspectRatioMode.KeepAspectRatio)
 
-def write_fish_description(name, description):
+def set_fish_description(name, description):
     files.cursor.execute("UPDATE fish SET description = ? WHERE name = ?", (description, name))
     files.conn.commit()
 
-def write_fish_name(name, new_name):
+def set_fish_name(name, new_name):
     files.cursor.execute("UPDATE fish SET name = ? WHERE name = ?", (new_name, name))
     files.conn.commit()
 
+def set_image(self, name):
+    file_path, _ = QFileDialog.getOpenFileName(
+            self,
+            "Select a file",
+            "",
+            "All Files (*);;Text Files (*.txt);;Images (*.png *.jpg)"
+        )
+    if file_path:
+        if file_path.split("/")[-2] != "art" or "photograph":
+            shutil.copy(file_path, config.image_path if not art else config.art_path)
+        if art:
+            files.cursor.execute("UPDATE fish SET art_filename = ? WHERE name = ?", (file_path.split("/")[-1], name))
+        else:
+            files.cursor.execute("UPDATE fish SET image_filename = ? WHERE name = ?", (file_path.split("/")[-1], name))
+        files.conn.commit()
+        fill_fish_details(
+            self.fishNameTextEdit,
+            self.fishDescription,
+            self.fishGraphicsView,
+            name
+        )
 
 def fill_fish_details( fishTextEdit, descriptionPlainTextEdit, graphicsView, name):
     details = files.cursor.execute("SELECT * FROM fish WHERE name = ?", (name,)).fetchone()

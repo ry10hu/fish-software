@@ -17,11 +17,19 @@ class MainWindow(QMainWindow):
         
         self.fishDescription.textChanged.connect(
             lambda: (
-                write_fish_description(
+                set_fish_description(
                     self.fishListWidget.currentItem().text()
                     if self.fishListWidget.currentItem() else "",
                     self.fishDescription.toPlainText()
                 ) if self.fishListWidget.currentItem() else None
+            )
+        )
+        
+        self.fishGraphicsView.mouseDoubleClickEvent = lambda event: (
+            set_image(
+                self,
+                self.fishListWidget.currentItem().text()
+                if self.fishListWidget.currentItem() else ""
             )
         )
         # Broken code for fish name editing
