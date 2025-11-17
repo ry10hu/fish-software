@@ -67,3 +67,5 @@ jobs:
         files: |
           artifacts/ubuntu-latest-build/FishSoftware-linux.tar.gz
           artifacts/windows-latest-build/FishSoftware-windows.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_PAT }}
