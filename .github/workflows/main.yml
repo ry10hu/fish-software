@@ -73,6 +73,6 @@ jobs:
         with:
           files: |
             artifacts/linux/FishSoftware-linux.tar.gz
-            artifacts/windows/FishSoftware-windows.zip
+            # artifacts/windows/FishSoftware-windows.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
