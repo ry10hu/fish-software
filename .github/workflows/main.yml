@@ -3,8 +3,8 @@ name: Build FishSoftware
 on:
   push:
     tags:
-      - "v*.*.*"     # builds when you push a tag like v1.0.0
-  workflow_dispatch:   # allows manual runs
+      - "v*.*.*"
+  workflow_dispatch:
 
 jobs:
   build:
@@ -14,58 +14,65 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: "3.12"
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install pyinstaller PyQt6
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller PyQt6
 
-    - name: Build with PyInstaller
-      run: |
-        pyinstaller src/specs/FishSoftware.spec
+      - name: Build with PyInstaller
+        run: |
+          pyinstaller src/specs/FishSoftware.spec
 
-    - name: Archive build
-      if: matrix.os == 'ubuntu-latest'
-      run: |
-        cd dist
-        tar -czvf FishSoftware-linux.tar.gz FishSoftware
+      - name: Archive build (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          cd dist
+          tar -czvf FishSoftware-linux.tar.gz FishSoftware
 
-    - name: Archive build (Windows)
-      if: matrix.os == 'windows-latest'
-      run: |
-        powershell Compress-Archive -Path dist\FishSoftware -DestinationPath FishSoftware-windows.zip
+      - name: Archive build (Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          powershell Compress-Archive -Path dist\FishSoftware -DestinationPath dist\FishSoftware-windows.zip
 
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ matrix.os }}-build
-        path: |
-          dist/FishSoftware-linux.tar.gz
-          dist/FishSoftware-windows.zip
-        if-no-files-found: ignore
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.os }}-build
+          path: |
+            dist/FishSoftware-linux.tar.gz
+            dist/FishSoftware-windows.zip
+          if-no-files-found: ignore
 
   release:
     needs: build
     runs-on: ubuntu-latest
 
     steps:
-    - name: Download artifacts
-      uses: actions/download-artifact@v4
-      with:
-        path: ./artifacts
+      - name: Download Linux artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ubuntu-latest-build
+          path: ./artifacts/linux
 
-    - name: Create GitHub Release
-      uses: softprops/action-gh-release@v2
-      with:
-        files: |
-          artifacts/ubuntu-latest-build/FishSoftware-linux.tar.gz
-          artifacts/windows-latest-build/FishSoftware-windows.zip
-      env:
-        GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+      - name: Download Windows artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-latest-build
+          path: ./artifacts/windows
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            artifacts/linux/FishSoftware-linux.tar.gz
+            artifacts/windows/FishSoftware-windows.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
