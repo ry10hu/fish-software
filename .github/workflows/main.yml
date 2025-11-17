@@ -47,8 +47,8 @@ jobs:
       with:
         name: ${{ matrix.os }}-build
         path: |
-          src/dist/FishSoftware-linux.tar.gz
-          src/dist/FishSoftware-windows.zip
+          dist/FishSoftware-linux.tar.gz
+          dist/FishSoftware-windows.zip
         if-no-files-found: ignore
 
   release:
