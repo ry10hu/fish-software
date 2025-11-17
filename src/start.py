@@ -1,13 +1,21 @@
-import sys, config
+import sys
 from logic.main import  *
 from PyQt6.QtWidgets import QDialog, QApplication, QMainWindow
 from PyQt6 import uic
+import os, sys
+
+def resource_path(relative):
+    if hasattr(sys, "_MEIPASS"):
+        return os.path.join(sys._MEIPASS, relative)
+    return os.path.join(os.path.abspath("."), relative)
+
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         # Load the .ui file into the window
-        uic.loadUi("main/gui/main.ui", self)
+        uic.loadUi(resource_path("gui/main.ui"), self)
         files  # Initialize the database connection
         self.fishListWidget.setSortingEnabled(True)
 
@@ -83,7 +91,7 @@ class MainWindow(QMainWindow):
 class NewFishWindow(QDialog):
     def __init__(self, main_window):
         super().__init__()
-        uic.loadUi("main/gui/new.ui", self)
+        uic.loadUi(resource_path("gui/new.ui"), self)
         self.main_window = main_window  # store reference
         self.name = ""
         self.description = ""

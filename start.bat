@@ -1,4 +1,4 @@
 @echo off
 REM Run the Python script
-python main\start.py
+python start.py
 pause
