@@ -3,4 +3,4 @@ if (-not (Get-Command python -ErrorAction SilentlyContinue)) {
     exit 1
 }
 
-python start.py
+python src/start.py
