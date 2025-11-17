@@ -34,21 +34,21 @@ jobs:
     - name: Archive build
       if: matrix.os == 'ubuntu-latest'
       run: |
-        cd dist
+        cd src/dist
         tar -czvf FishSoftware-linux.tar.gz FishSoftware
 
     - name: Archive build (Windows)
       if: matrix.os == 'windows-latest'
       run: |
-        powershell Compress-Archive -Path dist\FishSoftware -DestinationPath FishSoftware-windows.zip
+        powershell Compress-Archive -Path src\dist\FishSoftware -DestinationPath FishSoftware-windows.zip
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.os }}-build
         path: |
-          dist/FishSoftware-linux.tar.gz
-          dist/FishSoftware-windows.zip
+          src/dist/FishSoftware-linux.tar.gz
+          src/dist/FishSoftware-windows.zip
         if-no-files-found: ignore
 
   release:
