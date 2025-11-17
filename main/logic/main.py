@@ -1,8 +1,8 @@
 import sqlite3, config
-from PyQt6 import QtWidgets, uic
+from PyQt6 import QtWidgets, uic, QtCore
 from PyQt6.QtGui import QPixmap, QPainter
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QFileDialog
+from PyQt6.QtWidgets import QFileDialog, QApplication, QMainWindow
 import sys, shutil
 
 class files:
@@ -80,3 +80,36 @@ def fill_fish_details( fishTextEdit, descriptionPlainTextEdit, graphicsView, nam
                 setGraphicsView(graphicsView, config.image_path + "/" + details[3])  # Assuming details[4] is the photograph filename
             else:
                 graphicsView.setScene(None)
+
+
+def make_new_fish(name, description, image_path, art_path):
+    print(f"Type of art_path: {type(art_path)}")
+    print(f"Type of image_path: {type(image_path)}")
+    print(f"Art path: {art_path}")
+    print(f"Image path: {image_path}")
+    image_filename = None
+    art_filename = None
+    if art_path != None and art_path.endswith((".png", ".jpg", ".jpeg")):
+        if art_path.split("/")[-2] != "art":
+            shutil.copy(art_path, config.art_path)
+            art_filename = art_path.split("/")[-1]
+        else:
+            art_filename = art_path.split("/")[-1]
+
+    if image_path != None and image_path.endswith((".png", ".jpg", ".jpeg")):
+        if image_path.split("/")[-2] != "photographs":
+            shutil.copy(image_path, config.image_path)
+            image_filename = image_path.split("/")[-1]
+        else:
+            image_filename = image_path.split("/")[-1]
+    files.cursor.execute(
+        "INSERT INTO fish (name, description, image_filename, art_filename) VALUES (?, ?, ?, ?)",
+        (name, description, image_filename, art_filename)
+    )
+    
+    files.conn.commit()
+
+def delete_fish(self, name):
+    files.cursor.execute("DELETE FROM fish WHERE name = ?", (name,))
+    files.conn.commit()
+    refresh_list(self.fishListWidget)

@@ -66,7 +66,7 @@
     </item>
     <item>
      <widget class="QWidget" name="rightPane" native="true">
-      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0,0,0">
+      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0,0,0,0">
        <item>
         <widget class="QPlainTextEdit" name="fishNameTextEdit">
          <property name="minimumSize">
@@ -121,6 +121,13 @@
        <item>
         <widget class="QPlainTextEdit" name="fishDescription"/>
        </item>
+       <item>
+        <widget class="QPushButton" name="deleteFishButton">
+         <property name="text">
+          <string>Delete fish</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
     </item>
@@ -135,14 +142,38 @@
      <height>22</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuTest">
+   <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>Test</string>
+     <string>File</string>
     </property>
+    <addaction name="actionNew_fish"/>
    </widget>
-   <addaction name="menuTest"/>
+   <widget class="QMenu" name="menuSort">
+    <property name="title">
+     <string>Sort</string>
+    </property>
+    <addaction name="actionAlphebetical"/>
+    <addaction name="actionCBA"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuSort"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionNew_fish">
+   <property name="text">
+    <string>New fish</string>
+   </property>
+  </action>
+  <action name="actionAlphebetical">
+   <property name="text">
+    <string>ABC</string>
+   </property>
+  </action>
+  <action name="actionCBA">
+   <property name="text">
+    <string>Reverse ABC</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

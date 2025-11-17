@@ -1,6 +1,6 @@
 import sys, config
 from logic.main import  *
-from PyQt6.QtWidgets import QApplication, QMainWindow
+from PyQt6.QtWidgets import QDialog, QApplication, QMainWindow
 from PyQt6 import uic
 
 class MainWindow(QMainWindow):
@@ -9,6 +9,8 @@ class MainWindow(QMainWindow):
         # Load the .ui file into the window
         uic.loadUi("main/gui/main.ui", self)
         files  # Initialize the database connection
+        self.fishListWidget.setSortingEnabled(True)
+
         refresh_list(self.fishListWidget)  # Refresh the fish list on startup
 
         self.fishSearchBar.textChanged.connect(
@@ -72,6 +74,75 @@ class MainWindow(QMainWindow):
                 )
             )
         )
+        self.deleteFishButton.clicked.connect(
+            lambda: delete_fish(self, self.fishListWidget.currentItem().text() if self.fishListWidget.currentItem() else ""
+        ))
+        self.actionNew_fish.triggered.connect(
+            lambda: NewFishWindow(self).show()
+        )
+class NewFishWindow(QDialog):
+    def __init__(self, main_window):
+        super().__init__()
+        uic.loadUi("main/gui/new.ui", self)
+        self.main_window = main_window  # store reference
+        self.name = ""
+        self.description = ""
+        self.image_path = ""
+        self.art_path = ""
+
+        # Connect signals correctly
+        self.newFishDescriptionTextEdit.document().contentsChanged.connect(self.update_description)
+        self.newFishNameTextEdit.document().contentsChanged.connect(self.update_name)
+        
+        self.newFishGraphicsView.mouseDoubleClickEvent = self.choose_png
+        self.saveButton.clicked.connect(self.add_fish)
+        self.artButton.clicked.connect(self.toggle_art2)
+        self.photoButton.clicked.connect(self.toggle_photo2)
+
+
+    
+    # --- slots ---
+    def update_description(self):
+        self.description = self.newFishDescriptionTextEdit.toPlainText()
+
+    def update_name(self):
+        self.name = self.newFishNameTextEdit.toPlainText()
+    
+    def choose_image(self):
+        file_path, _ = QFileDialog.getOpenFileName(self, "Select image", "",
+                        "Images (*.png *.jpg *.jpeg)")
+        if file_path:
+            self.image_path = file_path
+            setGraphicsView(self.newFishGraphicsView, file_path)
+
+    def choose_art(self):
+        file_path, _ = QFileDialog.getOpenFileName(self, "Select art", "",
+                        "Images (*.png *.jpg *.jpeg)")
+        if file_path:
+            self.art_path = file_path
+            setGraphicsView(self.newFishGraphicsView, file_path)
+    def choose_png(self, event):
+        if art:
+            self.choose_art()
+        else:
+            self.choose_image()
+    def toggle_photo2(self):
+        global art
+        art = False
+        setGraphicsView(self.newFishGraphicsView, self.image_path)
+    def toggle_art2(self):
+        global art
+        art = True
+        setGraphicsView(self.newFishGraphicsView, self.art_path)
+
+    def add_fish(self):
+        make_new_fish(self.name,
+                      self.description,
+                      self.image_path,
+                      self.art_path)
+        refresh_list(self.main_window.fishListWidget)
+        self.close()
+        
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MainWindow()
