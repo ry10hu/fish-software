@@ -67,14 +67,12 @@ jobs:
 
     steps:
       - name: Download Linux artifact
-        if: matrix.os == 'ubuntu-latest'
         uses: actions/download-artifact@v4
         with:
           name: ubuntu-latest-build
           path: ./artifacts/linux
 
       - name: Download Windows artifact
-        if: matrix.os == 'windows-latest'
         uses: actions/download-artifact@v4
         with:
           name: windows-latest-build
