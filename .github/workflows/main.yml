@@ -44,12 +44,20 @@ jobs:
         run: |
           powershell Compress-Archive -Path dist\FishSoftware -DestinationPath dist\FishSoftware-windows.zip
 
-      - name: Upload artifact
+      - name: Upload Linux artifact
+        if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.os }}-build
+          name: ubuntu-latest-build
           path: |
             dist/FishSoftware-linux.tar.gz
+          if-no-files-found: ignore
+      - name: Upload Windows artifact
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-latest-build
+          path: |
             dist/FishSoftware-windows.zip
           if-no-files-found: ignore
 
